@@ -12,17 +12,19 @@ public class GameState {
     Map<String, Room> rooms; // global list of rooms
     Map<String, Item> items; // global list of known items
 
+    Map<String, Boolean> roomStates = new HashMap<>();  // track room states like "cleaned"
+    int playerHealth = 100;  // for weapon damage
+    Set<String> unlockedDoors = new HashSet<>();
+
     // update state and check for winning condition
     public String update() {
-        if (room.contents.contains(items.get("poison frog")) &&
-            room.contents.contains(items.get("book")) ){
+        if (
+            room.contents.contains(items.get("poison frog")) &&
+            room.contents.contains(items.get("fear")) &&
+            room.name.equals("Locked Room")){
             finished = true;
             String finaltext =  """
-                                The frog hops slowly over to the book and hops on top. Suddenly the book and the
-                                frog begin to glow. The room starts spinning and you shut your eyes out of fear.
-                                When you open them, you're back in the original basement room! When you open the
-                                door, you find yourself back in the modern-day library. As you leave and the door
-                                swings shut, you think you hear a faint \"ribbet\"....
+                                Your standing alone in this scary room. for some reason you cant stop shaking. Your filled with fear. To top it off you placed a posion frog in the middle of the room and you have a intense phobia of frogs so you pass out. Your eyes open, you look around and realize you have woken up in a Subway! Eat fresh!
                                 """;
             return finaltext;
         }
@@ -32,7 +34,7 @@ public class GameState {
     public GameState(String name) {
         this.name = name;
         finished = false;
-        LoadYAML yl = new LoadYAML();
+        LoadYAML yl = new LoadYAML(this);
         rooms = yl.rooms;
         items = yl.items;
         room = rooms.get("Starting Room");

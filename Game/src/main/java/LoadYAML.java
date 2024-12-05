@@ -17,6 +17,7 @@ public class LoadYAML {
     HashMap<String, Object> data;
     HashMap<String, Room> rooms = new HashMap<>();
     HashMap<String, Item> items = new HashMap<>();
+    GameState gameState;
 
     // load room data from yaml file
     // could do this more cleverly with packaged class definitions
@@ -45,7 +46,27 @@ public class LoadYAML {
             String usetext = (String) use.get("text");
             String useaction = (String) use.get("action");
             List<String> types = (ArrayList) properties.get("type");
-            items.put(name, new Item(name, types, desc, usetext, useaction));
+    
+            Item newItem;
+            if (types.contains("Animal")) {
+                int minDamage = ((Integer) properties.get("min-damage")).intValue();
+                int maxDamage = ((Integer) properties.get("max-damage")).intValue();
+                newItem = new Animal(name, types, desc, usetext, useaction, minDamage, maxDamage);
+            }
+            else if (types.contains("Weapon")) {
+                int minDamage = ((Integer) properties.get("min-damage")).intValue();
+                int maxDamage = ((Integer) properties.get("max-damage")).intValue();
+                newItem = new Weapon(name, types, desc, usetext, useaction, minDamage, maxDamage);
+            }
+            else if (types.contains("Healing")) {
+                int healAmount = ((Integer) properties.get("heal-amount")).intValue();
+                newItem = new Healing(name, types, desc, usetext, useaction, healAmount);
+            }
+            else {
+                newItem = new Item(name, types, desc, usetext, useaction);
+            }
+            newItem.gameState = this.gameState;
+            items.put(name, newItem);
         }
         return items;
     }
@@ -60,7 +81,8 @@ public class LoadYAML {
         return data;
     }
 
-    public LoadYAML() {
+    public LoadYAML(GameState state) {
+        this.gameState = state;
         items = loadItems();
         rooms = loadRooms();
     }

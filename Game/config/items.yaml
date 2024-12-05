@@ -44,3 +44,49 @@ book:
   use:
       text: "You place the book gently on the floor."
       action: "drop"
+
+
+
+
+
+scary key:
+  type: [Key]
+  description: "A scary looking key, might be used for something..."
+  use:
+      text: "You insert the key into the lock. It turns unlocking the door. Shivers run down your spine..."
+      action: "null"
+fear:
+  type: [Item]
+  description: "You carry your fear with you where you go..."
+  use:
+      text: "You carry your fear with you and it makes the room seem a little spookier."
+      action: "drop"
+
+
+
+
+
+
+spooky potion:
+  type: [Healing]
+  description: "A small black potion that restores health"
+  use:
+      text: "You drink the spooky concoction and feel a little better"
+      action: "consume"
+  heal-amount: 5
+
+super spooky potion:
+  type: [Healing]
+  description: "A larger black potion that restores health"
+  use:
+      text: "You drink the spooky concoction and feel better"
+      action: "consume"
+  heal-amount: 10
+
+super mega spooky potion:
+  type: [Healing]
+  description: "A huge 2 liter black potion that restores health"
+  use:
+      text: "You drink the spooky concoction and feel way better"
+      action: "consume"
+  heal-amount: 15

@@ -37,6 +37,7 @@ public class Item {
     String use;
     String action;
     Boolean used = false;
+    protected GameState gameState;  
 
     Item(String n, List<String> ts, String d, String u, String a) {
         name = n;

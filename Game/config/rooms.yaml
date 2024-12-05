@@ -1,8 +1,21 @@
 "Starting Room":
-  contents: [poison frog]
+  contents: [poison frog, excalibur, spooky potion]
   doors:
       green: "Closet"
+      blue: "Scary Closet"
+      black: "Locked Room"
+
 "Closet":
-  contents: [broom, mop, bucket, poster]
+  contents: [broom, mop, bucket, poster, super spooky potion]
   doors:
       green: "Starting Room"
+
+"Scary Closet":
+  contents: [fear, scary key]
+  doors:
+      blue: "Starting Room"
+
+"Locked Room":
+  contents: [super mega spooky potion]
+  doors: 
+      black: "Starting Room"

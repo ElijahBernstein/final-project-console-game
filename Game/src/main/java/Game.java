@@ -31,7 +31,7 @@ public class Game {
         name = myObj.nextLine();
         // init game state
         GameState state = new GameState(name);
-
+        
         // beginning flavor text
         /**
         printSlow("Welcome, "+name+".");
@@ -60,18 +60,40 @@ public class Game {
                     for (Item c : state.room.contents) printSlow(c.name);
                     printSlow("You also notice that this room has doors:");
                     for (String c : state.room.doors.keySet()) printSlow(c);
+                    printSlow("Your current health: " + state.playerHealth);
                     break;
-                case 2:
+
+
+                    case 2:
                     printSlow("Which door?");
                     String door = myObj.nextLine();
                     try {
-                        String rtemp = state.room.doors.get(door);
-                        state.room = state.rooms.get(rtemp);
-                        printSlow("You step through the " + door + " door. You realize this room is the " + state.room.name + ".");
+                        String nextRoom = state.room.doors.get(door);
+                        if (nextRoom.equals("Locked Room")) {
+                            boolean hasKey = false;
+                            for (Item item : state.inventory) {
+                                if (item.types.contains(ItemType.Key)) {
+                                    hasKey = true;
+                                    break;
+                                }
+                            }
+                            
+                            if (hasKey) {
+                                state.room = state.rooms.get(nextRoom);
+                                printSlow("You use the key to unlock the door and enter " + nextRoom);
+                            } else {
+                                printSlow("This very scary door is locked. You need a key to open it.");
+                            }
+                        } else {
+                            state.room = state.rooms.get(nextRoom);
+                            printSlow("You step through the " + door + " door. You realize this room is the " + state.room.name + ".");
+                        }
                     } catch (Exception e) {
                         printSlow("Unknown door.");
                     }
                     break;
+
+                    
                 case 3:
                     printSlow("Which item?");
                     itemp = myObj.nextLine();
@@ -89,18 +111,42 @@ public class Game {
                     printSlow("Your inventory:");
                     printSlow(state.inventory.toString());
                     break;
+
                 case 5:
                     printSlow("Which item?");
                     itemp = myObj.nextLine();
                     try {
                         Item item = state.items.get(itemp);
                         if (state.inventory.contains(item)) {
-                            item.use();
+                            // First show the use message
                             printSlow(item.use);
-                            if (item.action.equals("drop")) {
+                            // Store old health to calculate healing amount
+                            int oldHealth = state.playerHealth;
+                            item.use();
+                            
+                            // Handle different item types
+                            if (item instanceof Weapon) {
+                                Weapon weapon = (Weapon)item;
+                                printSlow("The weapon does " + weapon.getLastDamage() + " damage to you!");
+                                printSlow("Your health is now: " + state.playerHealth);
+                            }
+                            if (item instanceof Animal) {
+                                Animal animal = (Animal)item;
+                                printSlow("The animal does " + animal.getLastDamage() + " damage to you!");
+                                printSlow("Your health is now: " + state.playerHealth);
+                            }
+                            if (item instanceof Healing) {
+                                Healing healing = (Healing)item;
+                                int healedAmount = state.playerHealth - oldHealth;
+                                printSlow("You heal for " + healedAmount + " health!");
+                                printSlow("Your health is now: " + state.playerHealth);
+                            }
+                            if (item.action.equals("drop") || item.action.equals("consume")) {
                                 state.inventory.remove(item);
-                                state.room.contents.add(item);
-                                state.rooms.put(state.room.name, state.room);
+                                if (item.action.equals("drop")) {
+                                    state.room.contents.add(item);
+                                    state.rooms.put(state.room.name, state.room);
+                                }
                             }
                         }
                         else {
